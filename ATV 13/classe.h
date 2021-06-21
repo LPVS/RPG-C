@@ -24,21 +24,23 @@ public:
 class Arma
 {
 protected:
+    string nome;
     int id;
     int danoMin;
     int danoMax;
 public:
-    Arma(int id, int danoMin, int danoMax);
+    Arma(string nome, int id, int danoMin, int danoMax);
     ~Arma();
 };
 
 class Magia
 {
 private:
+    string nome;
     int id;
     bool dano;
     int gasto;
 public:
-    Magia(int id, bool dano, int gasto);
+    Magia(string nome, int id, bool dano, int gasto);
     ~Magia();
 };
