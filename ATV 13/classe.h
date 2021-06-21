@@ -13,9 +13,10 @@ private:
     int resFisico;
     int resMagia;
     int agilidade;
-    int idArma[7];
-    int idMagia[7];
+    string idArma;
+    string idMagia;
 public:
-    Personagem(int hp, int mp, int str, int mag, int armor, int magArmor, int agi, int idWeapon, int idMagic);
+    Personagem(int vida, int mana, int forca, int magia, int resFisico, int resMagia, int agilidade);
+    void imprimeDados();
     ~Personagem();
 };
