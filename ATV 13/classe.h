@@ -16,7 +16,7 @@ protected:
     string idArma;
     string idMagia;
 public:
-    Personagem(int vida, int mana, int forca, int magia, int resFisico, int resMagia, int agilidade);
+    Personagem(int vetor[7]);
     void imprimeDados();
     ~Personagem();
 };
