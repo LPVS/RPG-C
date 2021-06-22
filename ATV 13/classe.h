@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
-
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 class Personagem
@@ -18,6 +19,10 @@ protected:
 public:
     Personagem(int vetor[7]);
     void imprimeDados();
+    int mostraVida();
+    int calculaDano();
+    int ataqueFisico();
+    int ataqueMagia();
     ~Personagem();
 };
 
@@ -38,9 +43,9 @@ class Magia
 private:
     string nome;
     int id;
-    bool dano;
+    int dano;
     int gasto;
 public:
-    Magia(string nome, int id, bool dano, int gasto);
+    Magia(string nome, int id, int dano, int gasto);
     ~Magia();
 };
