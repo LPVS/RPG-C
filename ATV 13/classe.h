@@ -35,6 +35,7 @@ public:
     Personagem(int vetor[7]);
     void imprimeDados();
     int mostraVida();
+    int mostraMana();
     void recebeDano(int dano, int flag);
     int esquiva();
     int ataqueFisico();

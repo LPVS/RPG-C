@@ -85,6 +85,9 @@ void Personagem::imprimeDados()
 int Personagem::mostraVida(){
     return vida;
 }
+int Personagem::mostraMana(){
+    return mana;
+}
 
 int Personagem::ataqueFisico(){
     float dano = arma->calculaDano();
@@ -92,32 +95,55 @@ int Personagem::ataqueFisico(){
     return dano;
 }
 
+int Personagem::esquiva(){
+    int base = rand() % 100 + 1;
+    if (base < this->agilidade)
+        return 1;
+    return 0;
+}
+
 void Personagem::recebeDano(int dano, int flag){
 
-    if(flag == 1)
+    if(flag == 1){
+        //cout << dano << "\n";
         dano -= dano * (this->resFisico * 0.01);
+        //cout << dano << "\n";
+    }
     else if(flag == 2){
 
     }
     else{
         cout << "Como voce conseguiu fazer isso?!? E serio, como??";
     }
+    //cout << this->vida << "\n";
+    this->vida -= dano;
+    //cout << this->vida << "\n";
+}
+
+int observaVida(int vida){
+    if (vida <= 0)
+        return 1;
+    return 0;
 }
 
 int menuCombate(int i, Personagem *playerX, Personagem *playerY)
 {
-    int op, stop, dano;
+    int op, stop, dano, base;
     do
     {
         stop = 1;
-        cout << "\n [JOGADOR " << i << "] \n Escolha: \n 1-Ataque Fisico  |  2-Magia  |  3-Trocar arma \n --";
+        cout << "\n [JOGADOR " << i << "] - HP: " << playerX->mostraVida() << " MP: " << playerX->mostraMana() << " \n Escolha: \n 1-Ataque Fisico  |  2-Magia  |  3-Trocar arma \n --";
         scanf("%d", &op);
         getchar();
         switch (op)
         {
         case 1:
             dano = playerX->ataqueFisico();
-            playerY->recebeDano(dano, 1);
+            if(playerY->esquiva()){
+                cout << "Esquiva!! \n ";
+            }
+            else
+                playerY->recebeDano(dano, 1);
             return 1;
             break;
         case 2:
@@ -135,6 +161,8 @@ int menuCombate(int i, Personagem *playerX, Personagem *playerY)
     } while (stop == 0);
     return 0;
 }
+
+
 
 int main()
 {
@@ -208,8 +236,9 @@ int main()
     }
     player1 = new Personagem(teste[1]);
     player2 = new Personagem(teste[2]);
-    player1->imprimeDados();
-    player2->imprimeDados();
+    //player1->imprimeDados();
+    //player2->imprimeDados();
+    delete teste;
     delete a;
     delete atributos;
     // Rodadas
@@ -218,11 +247,24 @@ int main()
     do
     {
         //turno Player 1
-        op = menuCombate(1, player1, player2);
-
+        if(stop == 0){
+            op = menuCombate(1, player1, player2);
+            if (observaVida(player2->mostraVida())){
+                cout << "TEMOS UM VENCEDOR!!! \n Jogador 1 vence a partida. \n";
+                stop = 1;
+            }
+        }
+        
         //turno Player 2
-        op = menuCombate(2, player2, player1);
-
+        if (stop == 0){
+            op = menuCombate(2, player2, player1);
+            if (observaVida(player1->mostraVida())){
+                cout << "TEMOS UM VENCEDOR!!! \n Jogador 2 vence a partida. \n";
+                stop = 1;
+            }
+        }
+        
+        
     } while (stop == 0);
 
     return 0;
