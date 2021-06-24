@@ -1,9 +1,66 @@
 #include "classe.h"
+#include "accessdata.h"
 #include <iostream>
 #include <string.h>
 #include <cstdlib>
 #include <ctime>
+#include <stdlib.h>
+#include <fstream>
+#include <stdio.h>
+#include <time.h>
 using namespace std;
+
+Accessdata::Accessdata(int qtdAtributos) {
+    //você deverá retorar este vetor de atributos para dentro do seu programa no momento de instanciar um novo personagem
+    this->qtdAtributos = qtdAtributos;
+    this->atributos = new int [qtdAtributos];    //quantidade de atributos das classes do jogo
+}
+string Accessdata::abreArquivo (string nomeDaClasse) {
+    fstream arq;
+    arq.open(nomeDaClasse ,ios::in);
+    string linha;
+    
+    //Faz a leitura linha a linha do arquivo texto (string linha armazena a linha lida do arquivo)
+    if (arq.is_open()){ 
+        getline(arq, linha);       
+    }
+    arq.close();
+    return linha;
+}
+int * Accessdata::obtemAtributos (string nomeDaClasse){    
+    string linha = abreArquivo (nomeDaClasse);
+    char str[linha.size()];
+    //converte a string para um vetor de caractere          
+    for (int i = 0; i < linha.size(); i++)        
+        str[i] = linha[i];
+    char ch[2] = ",";   //especifica o caractere que será usado para dividir a string (split)    
+    char *token;
+    char *palavra;
+    int i = 0; 
+
+    token = strtok(str, ch);     
+    while( token != NULL ) {
+        palavra = token;
+        token = strtok(NULL, ch);
+        this->atributos[i++] = atoi(palavra);
+    }
+    return this->atributos;         
+}
+
+Arma::Arma(int vetor[4]){
+    this->nome = vetor[0];
+    this->id = vetor[1];
+    this->danoMin = vetor[2];
+    this->danoMax = vetor[3];
+}
+void Arma::imprimeDados(){
+    cout << nome << " - " << id << " - " << danoMin << " - " << danoMax << " - "; 
+}
+
+int Arma::calculaDano(){
+    int dano = this->danoMin + (rand() % (this->danoMax - this->danoMin));
+    return dano;
+}
 
 Personagem::Personagem(int vetor[7])
 {
@@ -14,6 +71,10 @@ Personagem::Personagem(int vetor[7])
     this->resFisico = vetor[4];
     this->resMagia = vetor[5];
     this->agilidade = vetor[6];
+
+    Accessdata * a = new Accessdata(4);    
+    int * atributos = a->obtemAtributos ("2porrete.txt");
+    arma = new Arma(atributos);
 }
 void Personagem::imprimeDados()
 {
@@ -21,27 +82,46 @@ void Personagem::imprimeDados()
     cout << resFisico << " - " << resMagia << " - " << agilidade << "\n";
 }
 
-int Personagem::mostraVida()
-{
+int Personagem::mostraVida(){
     return vida;
 }
 
-int menuCombate(int i, Personagem *player)
+int Personagem::ataqueFisico(){
+    float dano = arma->calculaDano();
+    dano += dano * (this->forca * 0.01);
+    return dano;
+}
+
+void Personagem::recebeDano(int dano, int flag){
+
+    if(flag == 1)
+        dano -= dano * (this->resFisico * 0.01);
+    else if(flag == 2){
+
+    }
+    else{
+        cout << "Como voce conseguiu fazer isso?!? E serio, como??";
+    }
+}
+
+int menuCombate(int i, Personagem *playerX, Personagem *playerY)
 {
-    int op, stop;
+    int op, stop, dano;
     do
     {
         stop = 1;
-        cout << "\n [JOGADOR " << i << "] \n Escolha: \n 1-Ataque Fisico  |  2-Magia  |  3-Trocar arma  |--";
+        cout << "\n [JOGADOR " << i << "] \n Escolha: \n 1-Ataque Fisico  |  2-Magia  |  3-Trocar arma \n --";
         scanf("%d", &op);
         getchar();
         switch (op)
         {
         case 1:
-            player->imprimeDados();
+            dano = playerX->ataqueFisico();
+            playerY->recebeDano(dano, 1);
             return 1;
             break;
         case 2:
+            
             return 2;
             break;
         case 3:
@@ -58,17 +138,11 @@ int menuCombate(int i, Personagem *player)
 
 int main()
 {
-    //Definir personagens
+    srand (time(0));
+    //Definir atributos de personagens
     int q = 7;
-    int guerreiro[q] = {4000, 30, 100, 20, 80, 20, 20};
-    int ladrao[q] = {2800, 50, 50, 30, 40, 50, 80};
-    int mago[q] = {2500, 100, 40, 100, 30, 80, 40};
-    int paladino[q] = {3200, 80, 60, 50, 60, 60, 60};
-    int animal[q] = {3200, 30, 80, 20, 80, 20, 50};
-    int troll[q] = {2800, 20, 100, 20, 80, 20, 20};
-    int dragao[q] = {3000, 40, 100, 20, 50, 50, 30};
-    int zumbi[q] = {2500, 20, 40, 20, 40, 80, 50};
-
+    Accessdata * a = new Accessdata(q);    
+    int * atributos;  
     //Definir variáveis
     int op, i, n, stop;
     int teste[2][q];
@@ -86,36 +160,44 @@ int main()
             switch (op)
             {
             case 1:
+                atributos = a->obtemAtributos ("1guerreiro.txt");
                 for (n = 0; n < 7; n++)
-                    teste[i][n] = guerreiro[n];
+                    teste[i][n] = atributos[n];
                 break;
             case 2:
+                atributos = a->obtemAtributos ("1ladrao.txt");
                 for (n = 0; n < 7; n++)
-                    teste[i][n] = ladrao[n];
+                    teste[i][n] = atributos[n];
                 break;
             case 3:
+                atributos = a->obtemAtributos ("1mago.txt");
                 for (n = 0; n < 7; n++)
-                    teste[i][n] = mago[n];
+                    teste[i][n] = atributos[n];
                 break;
             case 4:
+                atributos = a->obtemAtributos ("1paladino.txt");
                 for (n = 0; n < 7; n++)
-                    teste[i][n] = paladino[n];
+                    teste[i][n] = atributos[n];
                 break;
             case 5:
+                atributos = a->obtemAtributos ("1animal.txt");
                 for (n = 0; n < 7; n++)
-                    teste[i][n] = animal[n];
+                    teste[i][n] = atributos[n];
                 break;
             case 6:
+                atributos = a->obtemAtributos ("1troll.txt");
                 for (n = 0; n < 7; n++)
-                    teste[i][n] = troll[n];
+                    teste[i][n] = atributos[n];
                 break;
             case 7:
+                atributos = a->obtemAtributos ("1dragao.txt");
                 for (n = 0; n < 7; n++)
-                    teste[i][n] = dragao[n];
+                    teste[i][n] = atributos[n];
                 break;
             case 8:
+                atributos = a->obtemAtributos ("1zumbi.txt");
                 for (n = 0; n < 7; n++)
-                    teste[i][n] = zumbi[n];
+                    teste[i][n] = atributos[n];
                 break;
             default:
                 cout << "Opcao invalida, tente novamente\n";
@@ -126,17 +208,20 @@ int main()
     }
     player1 = new Personagem(teste[1]);
     player2 = new Personagem(teste[2]);
-
+    player1->imprimeDados();
+    player2->imprimeDados();
+    delete a;
+    delete atributos;
     // Rodadas
     cout << "Preprarem-se para a batalha \n COMECAR \n";
     stop = 0;
     do
     {
         //turno Player 1
-        op = menuCombate(1, player1);
+        op = menuCombate(1, player1, player2);
 
         //turno Player 2
-        op = menuCombate(2, player2);
+        op = menuCombate(2, player2, player1);
 
     } while (stop == 0);
 

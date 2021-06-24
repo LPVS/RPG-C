@@ -4,6 +4,20 @@
 #include <ctime>
 using namespace std;
 
+class Arma
+{
+protected:
+    string nome;
+    int id;
+    int danoMin;
+    int danoMax;
+public:
+    Arma(int vetor[4]);
+    void imprimeDados();
+    int calculaDano();
+    ~Arma();
+};
+
 class Personagem
 {
 protected:
@@ -14,28 +28,18 @@ protected:
     int resFisico;
     int resMagia;
     int agilidade;
+    Arma *arma;
     string idArma;
     string idMagia;
 public:
     Personagem(int vetor[7]);
     void imprimeDados();
     int mostraVida();
-    int calculaDano();
+    void recebeDano(int dano, int flag);
+    int esquiva();
     int ataqueFisico();
     int ataqueMagia();
     ~Personagem();
-};
-
-class Arma
-{
-protected:
-    string nome;
-    int id;
-    int danoMin;
-    int danoMax;
-public:
-    Arma(string nome, int id, int danoMin, int danoMax);
-    ~Arma();
 };
 
 class Magia
@@ -46,6 +50,7 @@ private:
     int dano;
     int gasto;
 public:
-    Magia(string nome, int id, int dano, int gasto);
+    Magia(int vetor[4]);
+    void imprimeDados();
     ~Magia();
 };
