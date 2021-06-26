@@ -8,98 +8,119 @@
 #include <fstream>
 #include <stdio.h>
 #include <time.h>
+
 using namespace std;
 
 //Classe Accesdata
-Accessdata::Accessdata(int qtdAtributos) {
+Accessdata::Accessdata(int qtdAtributos)
+{
     //você deverá retorar este vetor de atributos para dentro do seu programa no momento de instanciar um novo personagem
     this->qtdAtributos = qtdAtributos;
-    this->atributos = new int [qtdAtributos];    //quantidade de atributos das classes do jogo
+    this->atributos = new int[qtdAtributos]; //quantidade de atributos das classes do jogo
 }
-string Accessdata::abreArquivo (string nomeDaClasse) {
+string Accessdata::abreArquivo(string nomeDaClasse)
+{
     fstream arq;
-    arq.open(nomeDaClasse ,ios::in);
+    arq.open(nomeDaClasse, ios::in);
     string linha;
-    
+
     //Faz a leitura linha a linha do arquivo texto (string linha armazena a linha lida do arquivo)
-    if (arq.is_open()){ 
-        getline(arq, linha);       
+    if (arq.is_open())
+    {
+        getline(arq, linha);
     }
     arq.close();
     return linha;
 }
-int * Accessdata::obtemAtributos (string nomeDaClasse){    
+int *Accessdata::obtemAtributos(string nomeDaClasse)
+{
 
-
-    string linha = abreArquivo (nomeDaClasse);
+    string linha = abreArquivo(nomeDaClasse);
     char str[linha.size()];
-    //converte a string para um vetor de caractere          
-    for (int i = 0; i < linha.size(); i++)        
+    //converte a string para um vetor de caractere
+    for (int i = 0; i < linha.size(); i++)
         str[i] = linha[i];
-    char ch[2] = ",";   //especifica o caractere que será usado para dividir a string (split)    
+    char ch[2] = ","; //especifica o caractere que será usado para dividir a string (split)
     char *token;
     char *palavra;
-    int i = 0; 
+    int i = 0;
 
-    token = strtok(str, ch);     
-    while( token != NULL ) {
+    token = strtok(str, ch);
+    while (token != NULL)
+    {
         palavra = token;
         token = strtok(NULL, ch);
         this->atributos[i++] = atoi(palavra);
     }
-    return this->atributos;         
+    return this->atributos;
 }
 
 //Atributos Arma
-Arma::Arma(int vetor[4]){
+Arma::Arma(int vetor[4])
+{
     this->id = vetor[1];
     this->danoMin = vetor[2];
     this->danoMax = vetor[3];
     this->nome = obtemNome(vetor[1]);
 }
-void Arma::imprimeDados(){
-    cout << nome << " - " << id << " - " << danoMin << " - " << danoMax << " - "; 
+void Arma::imprimeDados()
+{
+    cout << nome << " - " << id << " - " << danoMin << " - " << danoMax << " - \n ";
 }
-int Arma::calculaDano(){
+int Arma::calculaDano()
+{
     //cout << this->danoMin << " - " << this->danoMax << " \n ";
     int dano = this->danoMin + (rand() % (this->danoMax - this->danoMin));
+    //cout << dano << "\n" ;
     return dano;
 }
-int Arma::obtemID(){
+int Arma::obtemID()
+{
     return id;
 }
-string Arma::obtemNome(int id){
+string Arma::obtemNome(int id)
+{
     string base;
-    if (id == 0){
+    if (id == 0)
+    {
         base = "Desarmado";
     }
-    else if(id == 1){
+    else if (id == 1)
+    {
         base = "Garra Letal";
     }
-    else if(id == 2){
+    else if (id == 2)
+    {
         base = "Tridente Sagrado";
     }
-    else if(id == 3){
+    else if (id == 3)
+    {
         base = "Espada Barroca";
     }
-    else if(id == 4){
+    else if (id == 4)
+    {
         base = "Porrete";
     }
-    else if(id == 5){
+    else if (id == 5)
+    {
         base = "Cajado";
     }
-    else if(id == 6){
+    else if (id == 6)
+    {
         base = "Besta";
     }
-    else if(id == 7){
+    else if (id == 7)
+    {
         base = "Esfera de Ataque";
     }
-    else if(id == 8){
+    else if (id == 8)
+    {
         base = "Voto Solene de BulKathos";
     }
     return base;
 }
-void Arma::imprimeArma(int vetor[4]){
+void Arma::imprimeArma(int vetor[4])
+{
     for (int i = 0; i < 4; i++)
     {
         if (vetor[i] == 1)
@@ -123,18 +144,22 @@ void Arma::imprimeArma(int vetor[4]){
 Personagem::Personagem(int vetor[11])
 {
     this->vida = vetor[0];
+    this->vidaMax = vetor[0];
     this->mana = vetor[1];
+    this->manaMax = vetor[1];
     this->forca = vetor[2];
     this->magia = vetor[3];
     this->resFisico = vetor[4];
     this->resMagia = vetor[5];
     this->agilidade = vetor[6];
-    for(int i = 0; i < 4; i++){
-        this->idArma[i] = vetor[(7+i)];
+    for (int i = 0; i < 4; i++)
+    {
+        this->idArma[i] = vetor[(7 + i)];
     }
-    Accessdata * a = new Accessdata(4);    
-    int * atributos = a->obtemAtributos ("2desarmado.txt");
+    Accessdata *a = new Accessdata(4);
+    int *atributos = a->obtemAtributos("2desarmado.txt");
     arma = new Arma(atributos);
+    anterior = arma;
     //arma->imprimeDados();
     delete a;
     delete atributos;
@@ -144,36 +169,44 @@ void Personagem::imprimeDados()
     cout << vida << " - " << mana << " - " << forca << " - " << magia << " - ";
     cout << resFisico << " - " << resMagia << " - " << agilidade << "\n";
 }
-int Personagem::mostraVida(){
+int Personagem::mostraVida()
+{
     return vida;
 }
-int Personagem::mostraMana(){
+int Personagem::mostraMana()
+{
     return mana;
 }
-int Personagem::ataqueFisico(){
+int Personagem::ataqueFisico()
+{
     float dano = arma->calculaDano();
     dano += dano * (this->forca * 0.01);
     return dano;
 }
-int Personagem::esquiva(){
+int Personagem::esquiva()
+{
     int base = rand() % 100 + 1;
     if (base < this->agilidade)
         return 1;
     return 0;
 }
-void Personagem::recebeDano(int dano, int flag){
+void Personagem::recebeDano(int dano, int flag)
+{
 
-    if(flag == 1){
+    if (flag == 1)
+    {
         //cout << dano << "\n";
         dano -= dano * (this->resFisico * 0.01);
         //cout << dano << "\n";
     }
-    else if(flag == 2){
+    else if (flag == 2)
+    {
         //cout << dano << "\n";
         dano -= dano * (this->resMagia * 0.01);
         //cout << dano << "\n";
     }
-    else{
+    else
+    {
         cout << "Como voce conseguiu fazer isso?!? E serio, como??";
     }
     cout << " [Dano causado: " << dano << "] \n";
@@ -181,93 +214,144 @@ void Personagem::recebeDano(int dano, int flag){
     this->vida -= dano;
     //cout << this->vida << "\n";
 }
-int Personagem::trocarArma(){
-
+void Personagem::trocarArma(int flag)
+{
     string base;
-    Accessdata * a = new Accessdata(4);    
-    int * atributos, op, stop;
-
-    cout << " \n [Escolha sua nova arma] \n ";
-    arma->imprimeArma(idArma);
-    do
-    {
-        scanf("%d", &op);
-        getchar();
-        stop = 0;
-        for(int i = 0; i < 4; i++){
-            if (idArma[i] != op)
-                stop++;
+    Accessdata *a = new Accessdata(4);
+    int *atributos, op, stop;
+    if (flag == 0){
+        cout << " \n [Escolha sua nova arma] \n ";
+        arma->imprimeArma(idArma);
+        do
+        {
+            scanf("%d", &op);
+            getchar();
+            stop = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                if (idArma[i] != op)
+                    stop++;
+            }
+            if (stop == 4)
+                cout << "[Opcao Invalida, escolha novamente] \n";
+        } while (stop == 4);
+        switch (op)
+        {
+            case 1:
+                base = "2garra-letal.txt";
+                break;
+            case 2:
+                base = "2tridente-sagrado.txt";
+                break;
+            case 3:
+                base = "2espada-barroca.txt";
+                break;
+            case 4:
+                base = "2porrete.txt";
+                break;
+            case 5:
+                base = "2cajado.txt";
+                break;
+            case 6:
+                base = "2besta.txt";
+                break;
+            case 7:
+                base = "2esfera-de-ataque.txt";
+                break;
+            default:
+                cout << "Erro: Opcao invalida";
+                break;
         }
-        if(stop == 4)
-            cout << "[Opcao Invalida, escolha novamente] \n";
-    } while (stop == 4);
-
-    switch (op)
-    {
-        case 1:
-            base = "2garra-letal.txt";
-            break;
-        case 2:
-            base = "2tridente-sagrado.txt";
-        break;
-        case 3:
-            base = "2espada-barroca.txt";
-        break;
-        case 4:
-            base = "2porrete.txt";
-        break;
-        case 5:
-            base = "2cajado.txt";
-        break;
-        case 6:
-            base = "2besta.txt";
-        break;
-        case 7:
-            base = "2esfera-de-ataque.txt";
-        break;
-        default:
-            cout << "Erro: Opcao invalida";
-            break;
-    } 
+        anterior = arma;
+        cout << "\n" ;
+        atributos = a->obtemAtributos(base);
+        arma = new Arma(atributos);
+        cout << " \n [Voce trocou sua arma para: " << arma->obtemNome(op) << "] \n ";
+    }
+    else if (flag == 1){
+        anterior = arma;
+        base = "2lendaria.txt";
+        atributos = a->obtemAtributos(base);
+        arma = new Arma(atributos);
+    }
+    else if (flag == 2){
+        arma = anterior;
+    }
+    else {
+        cout << " \n [ERRO NA TROCA DE ARMA] \n";
+    }
+    cout << "\n" ;
     //arma->imprimeDados();
-    atributos = a->obtemAtributos (base);
-    arma = new Arma(atributos);
-    //arma->imprimeDados();
-    cout << " \n [Voce trocou sua arma para: " << arma->obtemNome(op) << "] \n ";
-    return 0;
+    //anterior->imprimeDados();
+    //delete a;
+    //delete atributos;
 }
 
 //Funções Gerais
-
-int observaVida(int vida){
-    if (vida <= 0)
+int lendaria()
+{
+    int base = rand() % 100 + 1;
+    if (base <= 20)
+    {
+        cout << " \n [ !!!! VOCE FOI ABENCOADO COM A ESPADA LENDARIA !!!! ] \n [Nesse turno, seu ataque sera ampliado pelo Voto Solene de Bul-Kathos] \n";
         return 1;
+    }
+    return 0;
+}
+
+int critico(){
+    int base = rand() % 100 + 1;
+    if (base <= 30)
+    {
+        cout << " \n [ ! CRITICO ! ] \n [Dano dobrado] \n";
+        return 1;
+    }
+    return 0;
+}
+
+int observaVida(int vida)
+{
+    if (vida <= 0)
+    {
+        return 1;
+    }
     return 0;
 }
 
 void menuCombate(int i, Personagem *playerX, Personagem *playerY)
 {
-    int op, stop, dano, base;
+    cout << "\n [JOGADOR " << i << "]";
+    int op, stop, dano = 1, base, flag;
+    flag = lendaria();
+    if (flag){
+        playerX->trocarArma(1);
+        if (critico()){
+            dano = 2;
+        }
+    }
     do
     {
         stop = 1;
-        cout << "\n [JOGADOR " << i << "] - HP: " << playerX->mostraVida() << " MP: " << playerX->mostraMana() << " \n Escolha: \n 1-Ataque Fisico  |  2-Magia  |  3-Trocar arma \n --";
+        cout << " \n [HP: " << playerX->mostraVida() << "] [MP: " << playerX->mostraMana() << "] \n Escolha: \n 1-Ataque Fisico  |  2-Magia  |  3-Trocar arma \n --";
         scanf("%d", &op);
         getchar();
         switch (op)
         {
         case 1:
-            dano = playerX->ataqueFisico();
-            if(playerY->esquiva())
-                cout << "Esquiva!! \n ";
+            dano *= playerX->ataqueFisico();
+            if (playerY->esquiva())
+                cout << "[ ! JOGADOR ESQUIVOU ! ] \n ";
             else
                 playerY->recebeDano(dano, 1);
             break;
         case 2:
-            
+
+            //dano = playerX->ataqueMagia();
+            playerY->recebeDano(dano, 1);
             break;
         case 3:
-            playerX->trocarArma();
+            flag = 0;
+            playerX->trocarArma(0);
             break;
         default:
             cout << "Inválido \n";
@@ -275,17 +359,18 @@ void menuCombate(int i, Personagem *playerX, Personagem *playerY)
             break;
         }
     } while (stop == 0);
+    if(flag){
+        playerX->trocarArma(2);
+    }
 }
-
-
 
 int main()
 {
-    srand (time(0));
+    srand(time(0));
     //Definir atributos de personagens
     int q = 11;
-    Accessdata * a = new Accessdata(q);    
-    int * atributos;  
+    Accessdata *a = new Accessdata(q);
+    int *atributos;
     //Definir variáveis
     int op, i, n, stop;
     int teste[2][q];
@@ -303,42 +388,42 @@ int main()
             switch (op)
             {
             case 1:
-                atributos = a->obtemAtributos ("1guerreiro.txt");
+                atributos = a->obtemAtributos("1guerreiro.txt");
                 for (n = 0; n < q; n++)
                     teste[i][n] = atributos[n];
                 break;
             case 2:
-                atributos = a->obtemAtributos ("1ladrao.txt");
+                atributos = a->obtemAtributos("1ladrao.txt");
                 for (n = 0; n < q; n++)
                     teste[i][n] = atributos[n];
                 break;
             case 3:
-                atributos = a->obtemAtributos ("1mago.txt");
+                atributos = a->obtemAtributos("1mago.txt");
                 for (n = 0; n < q; n++)
                     teste[i][n] = atributos[n];
                 break;
             case 4:
-                atributos = a->obtemAtributos ("1paladino.txt");
+                atributos = a->obtemAtributos("1paladino.txt");
                 for (n = 0; n < q; n++)
                     teste[i][n] = atributos[n];
                 break;
             case 5:
-                atributos = a->obtemAtributos ("1animal.txt");
+                atributos = a->obtemAtributos("1animal.txt");
                 for (n = 0; n < q; n++)
                     teste[i][n] = atributos[n];
                 break;
             case 6:
-                atributos = a->obtemAtributos ("1troll.txt");
+                atributos = a->obtemAtributos("1troll.txt");
                 for (n = 0; n < q; n++)
                     teste[i][n] = atributos[n];
                 break;
             case 7:
-                atributos = a->obtemAtributos ("1dragao.txt");
+                atributos = a->obtemAtributos("1dragao.txt");
                 for (n = 0; n < q; n++)
                     teste[i][n] = atributos[n];
                 break;
             case 8:
-                atributos = a->obtemAtributos ("1zumbi.txt");
+                atributos = a->obtemAtributos("1zumbi.txt");
                 for (n = 0; n < q; n++)
                     teste[i][n] = atributos[n];
                 break;
@@ -361,23 +446,29 @@ int main()
     do
     {
         //turno Player 1
-        if(stop == 0){
+        if (stop == 0)
+        {
             menuCombate(1, player1, player2);
-            if (observaVida(player2->mostraVida())){
+            if (observaVida(player2->mostraVida()))
+            {
+                player2->mostraVida();
                 cout << "TEMOS UM VENCEDOR!!! \n Jogador 1 vence a partida. \n";
                 stop = 1;
             }
         }
-        
+
         //turno Player 2
-        if (stop == 0){
+        if (stop == 0)
+        {
             menuCombate(2, player2, player1);
-            if (observaVida(player1->mostraVida())){
+            if (observaVida(player1->mostraVida()))
+            {
+                player1->mostraVida();
                 cout << "TEMOS UM VENCEDOR!!! \n Jogador 2 vence a partida. \n";
                 stop = 1;
             }
         }
-        
+
     } while (stop == 0);
 
     return 0;

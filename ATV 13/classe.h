@@ -24,7 +24,9 @@ public:
 class Personagem
 {
 protected:
+    int vidaMax;
     int vida;
+    int manaMax;
     int mana;
     int forca;
     int magia;
@@ -32,6 +34,7 @@ protected:
     int resMagia;
     int agilidade;
     Arma *arma;
+    Arma *anterior;
     int idArma[7];
     int idMagia[7];
 public:
@@ -39,8 +42,9 @@ public:
     void imprimeDados();
     int mostraVida();
     int mostraMana();
-    int trocarArma();
+    void trocarArma(int flag);
     void recebeDano(int dano, int flag);
+    int lendaria(int op);
     int esquiva();
     int ataqueFisico();
     int ataqueMagia();
