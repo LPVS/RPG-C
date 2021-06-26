@@ -14,7 +14,10 @@ protected:
 public:
     Arma(int vetor[4]);
     void imprimeDados();
+    int obtemID();
+    void imprimeArma(int vetor[4]);
     int calculaDano();
+    string obtemNome(int id);
     ~Arma();
 };
 
@@ -29,13 +32,14 @@ protected:
     int resMagia;
     int agilidade;
     Arma *arma;
-    string idArma;
-    string idMagia;
+    int idArma[7];
+    int idMagia[7];
 public:
-    Personagem(int vetor[7]);
+    Personagem(int vetor[11]);
     void imprimeDados();
     int mostraVida();
     int mostraMana();
+    int trocarArma();
     void recebeDano(int dano, int flag);
     int esquiva();
     int ataqueFisico();
