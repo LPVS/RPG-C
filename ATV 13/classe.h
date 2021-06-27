@@ -68,6 +68,6 @@ public:
     void manipulaMana(int gasto, int op);
     int ataqueFisico();
     int menuMagia();
-    int ataqueMagia();
+    int ataqueMagia(int dano);
     ~Personagem();
 };

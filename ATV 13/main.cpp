@@ -295,14 +295,23 @@ void Personagem::recebeDano(int dano, int flag)
         dano -= dano * (this->resMagia * 0.01);
         //cout << dano << "\n";
     }
+    else if (flag == 3)
+    {
+        dano = dano * (-1);
+        this->vida += dano;
+        if (this->vida > this->vidaMax)
+            this->vida = this->vidaMax;
+    }
     else
     {
         cout << "Como voce conseguiu fazer isso?!? E serio, como??";
     }
-    cout << " [Dano causado: " << dano << "] \n";
-    //cout << this->vida << "\n";
-    this->vida -= dano;
-    //cout << this->vida << "\n";
+    if(flag != 3){
+        cout << " [Dano causado: " << dano << "] \n";
+        //cout << this->vida << "\n";
+        this->vida -= dano;
+        //cout << this->vida << "\n";
+    }
 }
 void Personagem::trocarArma(int flag)
 {
@@ -380,9 +389,8 @@ void Personagem::trocarArma(int flag)
     //delete a;
     //delete atributos;
 }
-int Personagem::ataqueMagia()
+int Personagem::ataqueMagia(int dano)
 {
-    float dano = menuMagia();
     //cout << dano << "\n" << mostraMana() << "\n";
     dano += dano * (this->magia * 0.01);
     return dano;
@@ -416,7 +424,7 @@ int Personagem::menuMagia()
         switch (op)
         {
         case 1:
-            base = "3poção.txt";
+            base = "3pocao.txt";
             stop = 1;
             break;
         case 2:
@@ -460,8 +468,9 @@ int Personagem::menuMagia()
     if(op!= 8){
 
         dano = magia->obtemDano();
-        //cout << mostraMana();
+        cout << mostraMana();
         manipulaMana(magia->obtemGasto(), 1);
+        cout << mostraMana();
         //magia->imprimeDados();
         cout << "\n [ Voce usou a magia: " << magia->obtemNome(op) << " ] \n";
 
@@ -469,10 +478,15 @@ int Personagem::menuMagia()
         delete a;
         delete magia;
     }
-    
+
     if(op == 8){
         dano = 0;
     }
+
+    if(stop == 0)
+        return ataqueMagia(dano);
+    else
+        dano = dano * (-1);
     return dano;
 }
 void Personagem::manipulaMana(int gasto, int op)
@@ -551,9 +565,12 @@ void menuCombate(int i, Personagem *playerX, Personagem *playerY)
                 playerY->recebeDano(dano, 1);
             break;
         case 2:
-            dano = playerX->ataqueMagia();
+            dano = playerX->menuMagia();
             if (dano == 0)
                 stop = 0;
+            else if(dano < 0){
+                playerX->recebeDano(dano, 3);
+            }
             else
                 playerY->recebeDano(dano, 2);
             break;
