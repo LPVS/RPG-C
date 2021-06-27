@@ -1,1 +1,1 @@
-'Desarmado', 0, 50, 50 
+'Desarmado', 0, 50, 55

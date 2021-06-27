@@ -4,8 +4,7 @@
 #include <ctime>
 using namespace std;
 
-class Arma
-{
+class Arma{
 protected:
     string nome;
     int id;
@@ -20,6 +19,26 @@ public:
     string obtemNome(int id);
     ~Arma();
 };
+
+class Magia
+{
+private:
+    string nome;
+    int id;
+    int dano;
+    int gasto;
+    int cura;
+public:
+    Magia(int vetor[5]);
+    void imprimeDados();
+    int obtemID();
+    int obtemDano();
+    int obtemGasto();
+    string obtemNome(int id);
+    void imprimeMagia(int vetor[5]);
+    ~Magia();
+};
+
 
 class Personagem
 {
@@ -38,7 +57,7 @@ protected:
     int idArma[7];
     int idMagia[7];
 public:
-    Personagem(int vetor[11]);
+    Personagem(int vetor[18]);
     void imprimeDados();
     int mostraVida();
     int mostraMana();
@@ -46,20 +65,9 @@ public:
     void recebeDano(int dano, int flag);
     int lendaria(int op);
     int esquiva();
+    void manipulaMana(int gasto, int op);
     int ataqueFisico();
+    int menuMagia();
     int ataqueMagia();
     ~Personagem();
-};
-
-class Magia
-{
-private:
-    string nome;
-    int id;
-    int dano;
-    int gasto;
-public:
-    Magia(int vetor[4]);
-    void imprimeDados();
-    ~Magia();
 };
