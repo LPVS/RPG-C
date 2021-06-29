@@ -256,8 +256,9 @@ Personagem::Personagem(int vetor[18])
 Personagem::~Personagem() {}
 void Personagem::imprimeDados()
 {
-    cout << vida << " - " << mana << " - " << forca << " - " << magia << " - ";
-    cout << resFisico << " - " << resMagia << " - " << agilidade << "\n";
+    cout << "\n[Vida Maxima: " << vidaMax << " ] [Vida atual: " << vida << "] \n[Mana Maxima: " << manaMax << " ] [Mana atual: " << mana << " ] \n";
+    cout << "[Forca: " << forca << "] [Dano magico: " << magia << "] [Agilidade: " << agilidade << "] \n";
+    cout << "[Armadura: " <<resFisico << "] [Resistencia Magica: " << resMagia << "] \n";
 }
 int Personagem::mostraVida()
 {
@@ -306,7 +307,8 @@ void Personagem::recebeDano(int dano, int flag)
     {
         cout << "Como voce conseguiu fazer isso?!? E serio, como??";
     }
-    if(flag != 3){
+    if (flag != 3)
+    {
         cout << " [Dano causado: " << dano << "] \n";
         //cout << this->vida << "\n";
         this->vida -= dano;
@@ -458,14 +460,16 @@ int Personagem::menuMagia()
             atributos = a->obtemAtributos(base);
             magia = new Magia(atributos);
 
-            if((magia->obtemGasto() > mana)){
+            if ((magia->obtemGasto() > mana))
+            {
                 cout << "Mana insuficiente!!! \n";
                 flag = 0;
             }
         }
-    }while (flag == 0);
-    
-    if(op!= 8){
+    } while (flag == 0);
+
+    if (op != 8)
+    {
 
         dano = magia->obtemDano();
         cout << mostraMana();
@@ -479,11 +483,12 @@ int Personagem::menuMagia()
         delete magia;
     }
 
-    if(op == 8){
+    if (op == 8)
+    {
         dano = 0;
     }
 
-    if(stop == 0)
+    if (stop == 0)
         return ataqueMagia(dano);
     else
         dano = dano * (-1);
@@ -551,7 +556,7 @@ void menuCombate(int i, Personagem *playerX, Personagem *playerY)
     do
     {
         stop = 1;
-        cout << " \n [HP: " << playerX->mostraVida() << "] [MP: " << playerX->mostraMana() << "] \n Escolha: \n 1-Ataque Fisico  |  2-Magia  |  3-Trocar arma \n --";
+        cout << " \n [HP: " << playerX->mostraVida() << "] [MP: " << playerX->mostraMana() << "] \n Escolha: \n 1-Ataque Fisico  |  2-Magia  |  3-Trocar arma  | 4-Status\n --";
         scanf("%d", &op);
         getchar();
         switch (op)
@@ -568,7 +573,8 @@ void menuCombate(int i, Personagem *playerX, Personagem *playerY)
             dano = playerX->menuMagia();
             if (dano == 0)
                 stop = 0;
-            else if(dano < 0){
+            else if (dano < 0)
+            {
                 playerX->recebeDano(dano, 3);
             }
             else
@@ -579,8 +585,12 @@ void menuCombate(int i, Personagem *playerX, Personagem *playerY)
             playerX->manipulaMana(10, 0);
             playerX->trocarArma(0);
             break;
+        case 4:
+            stop = 0;
+            playerX->imprimeDados();
+            break;
         default:
-            cout << "Inválido \n";
+            cout << "Invalido \n";
             stop = 0;
             break;
         }
